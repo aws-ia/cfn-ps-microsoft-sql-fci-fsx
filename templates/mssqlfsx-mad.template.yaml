@@ -176,7 +176,7 @@ Parameters:
     ConstraintDescription: The Quick Start bucket name can include numbers, lowercase
       letters, uppercase letters, and hyphens (-). It cannot start or end with a 
       hyphen (-).
-    Default: aws-quickstart
+    Default: aws-ia-us-east-1
     Description: Name of the S3 bucket for your copy of the Quick Start assets. 
       Keep the default name unless you are customizing the template. 
       Changing the name updates code references to point to a new Quick 
@@ -193,7 +193,7 @@ Parameters:
     ConstraintDescription: The Quick Start S3 key prefix can include numbers, lowercase letters,
       uppercase letters, hyphens (-), and forward slashes (/). The prefix should
       end with a forward slash (/).
-    Default: quickstart-microsoft-sql-fci-fsx/
+    Default: cfn-ps-microsoft-sql-fci-fsx/
     Description: S3 key prefix that is used to simulate a directory for your copy of the 
       Quick Start assets. Keep the default prefix unless you are customizing 
       the template. Changing this prefix updates code references to point to 
@@ -314,7 +314,7 @@ Parameters:
     Description: Name of the S3 bucket from which MSSQL media can be downloaded. You can use lowercase letters, uppercase letters, and hyphens (-). Do not start or end with a hyphen (-).
     Type: String   
   MSSQLMediaPathKey:
-    Default: quickstart-microsoft-SqlFSx/sql-installation-media/en_sql_server_2019_developer_x64_dvd_baea4195.iso
+    Default: cfn-ps-microsoft-SqlFSx/sql-installation-media/en_sql_server_2019_developer_x64_dvd_baea4195.iso
     Description: Key for the S3 bucket from which MSSQL media can be downloaded. You can use numbers, lowercase letters, uppercase letters, hyphens (-), and forward slashes (/).
     Type: String 
   SQLAdminAccounts:
@@ -330,7 +330,7 @@ Parameters:
     Description: CIDR block for the VPC.
     Type: String
 Conditions:
-  UsingDefaultBucket: !Equals [!Ref QSS3BucketName, 'aws-quickstart']
+  UsingDefaultBucket: !Equals [!Ref QSS3BucketName, 'aws-ia-us-east-1']
   EnableAppInsightForSQLHA: !Equals [!Ref 'EnableAppInsights', 'true']
 Rules:
   KeyPairsNotEmpty:
