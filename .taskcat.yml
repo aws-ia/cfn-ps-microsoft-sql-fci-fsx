@@ -1,5 +1,5 @@
 project:
-  name: quickstart-microsoft-sql-fci-fsx
+  name: cfn-ps-microsoft-sql-fci-fsx
   owner: quickstart-eng@amazon.com
   package_lambda: false
   regions:
