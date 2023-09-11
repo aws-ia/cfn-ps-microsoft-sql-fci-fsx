@@ -637,7 +637,7 @@ Resources:
             onFailure: step:signalfailure
             inputs:
               Runtime: PowerShell Core 6.0
-              Script: "Install-Module AWS.Tools.FSx -Force\nImport-Module AWS.Tools.FSx\n\n$fsList = Get-FSXFileSystem; \n$fsList.forEach{\n  $tags = $_.Tags; \n  foreach ($tag in $tags)\n  {\n    if ($tag.key\
+              Script: "Install-Module AWS.Tools.FSx -Force\nImport-Module AWS.Tools.FSx\n \n$fsList = Get-FSXFileSystem; \n$fsList.forEach{\n  $tags = $_.Tags; \n  foreach ($tag in $tags)\n  {\n    if ($tag.key\
                 \ -eq \"Name\" -And $tag.value -eq \"SqlFSxFileSystem\")\n    {\n      $dnsName = $_.DNSName;\n      $psEndpoint = $_.WindowsConfiguration.RemoteAdministrationEndpoint\n      break;\n  \
                 \  }\n  }\n};\n$resultStr = \"{0};{1}\" -f $dnsName, $psEndpoint\nWrite-Host $dnsName\nreturn @{message=$resultStr}\n"
             outputs:
@@ -700,13 +700,13 @@ Resources:
             onFailure: step:signalfailure
             inputs:
               Runtime: PowerShell Core 6.0
-              Script: "$inputPayload = $env:InputPayload | ConvertFrom-Json;                 \nInstall-Module AWS.Tools.EC2 -Force\nImport-Module AWS.Tools.EC2\n\n#Function to find Subnet\nfunction Get-SubnetMask($i)\n\
+              Script: "$inputPayload = $env:InputPayload | ConvertFrom-Json;                 \nInstall-Module AWS.Tools.EC2 -Force\nImport-Module AWS.Tools.EC2\n \n#Function to find Subnet\nfunction Get-SubnetMask($i)\n\
                 {\n   $instance = $i\n   $subnetid = $instance.instances[0].NetworkInterfaces.SubnetId\n   $subnet = get-ec2subnet -SubnetId $subnetid\n   $cidr = $subnet.CidrBlock\n   $cidr_mask = $cidr.split('/')[1]\n\
                 \   $A = 0\n   $A_Index = 8\n   $B = 0\n   $B_Index = 16\n   $C = 0\n   $C_Index = 24\n   $D = 0\n   $D_Index = 32\n   for ($i = 1; $i -le $cidr_mask; $i++)\n   {\n       if ($i -le $A_Index)\n\
                 \       {\n           $A += ([Math]::Pow(2, 8 - $i))\n       }\n       elseif ($i -le $B_Index)\n       {\n           $B += ([Math]::Pow(2, 8 - $i + $A_Index))\n       }\n       elseif ($i\
                 \ -le $C_Index)\n       {\n           $C += ([Math]::Pow(2, 8 - $i + $B_Index))\n       }\n       elseif ($i -le $D_Index)\n       {\n           $D += ([Math]::Pow(2, 8 - $i + $C_Index))\n\
-                \       }\n   }\n   $subnet_mask = \"{0}.{1}.{2}.{3}\" -f $A, $B, $C, $D\n   return $subnet_mask\n}\n\n$instanceIds = $inputPayload.parameter\n\n$resultStr = \"\"\n$subnetMaskStr = \"\"\n\
-                \n#Finding secondary IP addresses of the primary instance \nforeach ($i in $instanceIds)\n{               \n  $instance = get-ec2instance -InstanceId $i\n  $tags = $instance.instances[0].Tags\n\
+                \       }\n   }\n   $subnet_mask = \"{0}.{1}.{2}.{3}\" -f $A, $B, $C, $D\n   return $subnet_mask\n}\n\n$instanceIds = $inputPayload.parameter\n \n$resultStr = \"\"\n$subnetMaskStr = \"\"\
+                \n\n#Finding secondary IP addresses of the primary instance \nforeach ($i in $instanceIds)\n{               \n  $instance = get-ec2instance -InstanceId $i\n  $tags = $instance.instances[0].Tags\n\
                 \  foreach ($t in $tags)\n  {\n    if ($t.Key -eq \"FCIRole\" -And $t.Value -eq \"Primary\")\n    {\n      $IPs = $instance.instances[0].NetworkInterfaces.PrivateIpAddresses\n      $ip1\
                 \ = $IPs[1].PrivateIpAddress\n      $ip2 = $IPs[2].PrivateIpAddress\n      $resultStr = \"{0};{1}\" -f $ip1, $ip2\n      \n      $subnetMaskStr = Get-SubnetMask($instance)\n      break;\n\
                 \    }                     \n  }\n  if ([System.String]::IsNullOrEmpty($resultStr) -Eq $False)\n  {\n    break;\n  }\n}\n\n#Finding secondary IP addresses of the secondary instance \nforeach\
